@@ -5,21 +5,20 @@
       Bancos Colombia
     </title>
     <meta charset="utf-8"></meta>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    <link type="text/css" href="sfc.css" rel="stylesheet" />
     <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
     <script type="text/javascript" src="sfc.js"></script>
-    <style>
-      .bar {fill: #004;}
-      .bar:hover {fill: #066;}
-      .etiqueta {fill: white;}
-    </style>
   </head>
 
   <body>
     <div id="activos">
-      <h1>
+      <h1 class="titulo">
         Activos
       </h1>
     </div>
+    <div id='tooltip' class='hidden'>
+      <span id='tooltip_valor'></span>
+    </div>
   </body>
-
 </html>

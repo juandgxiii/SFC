@@ -1,0 +1,32 @@
+body {
+  background: #eee;
+}
+.bar {
+  fill: #004;
+}
+.bar:hover {
+  fill: #066;
+}
+.etiqueta {
+  fill: white;
+}
+.titulo {
+  font-family: 'Roboto', sans-serif;
+  font-size: 4em;
+  margin: auto;
+}
+.tick {
+  font-size: 1.2em;
+}
+#tooltip {
+  position: absolute;
+  height: auto;
+  padding: 0px 5px 0px 5px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+#tooltip.hidden {
+  display: none;
+}
