@@ -2,13 +2,10 @@ body {
   background: #eee;
 }
 .bar {
-  fill: #004;
+  fill: #005;
 }
 .bar:hover {
-  fill: #066;
-}
-.etiqueta {
-  fill: white;
+  fill: #0cc;
 }
 .titulo {
   font-family: 'Roboto', sans-serif;
