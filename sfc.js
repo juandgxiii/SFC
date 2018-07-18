@@ -1,8 +1,13 @@
+d3.json("es-ES.json").then(function(x){
+  d3.timeFormatDefaultLocale(x);
+});
+let t;
 const h = Math.max(400, window.innerHeight * 0.8);
 const w = Math.max(600, window.innerWidth * 0.8);
-let t;
+
 function draw(datos) {
   datos = JSON.parse(datos);
+  t = datos;
   const num = datos.length;
   const padding = 100;
   const escalaY = d3.scaleLinear()
@@ -11,10 +16,11 @@ function draw(datos) {
   const escalaX = d3.scaleTime()
     .domain([new Date(2015, 0, 1), new Date(2018, 4, 1)])
     .range([0, w - padding]);
-  t = escalaX;
+
   const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
-  const axisX = d3.axisLeft(escalaY);
-  const axisY = d3.axisBottom(escalaX);
+  const axisY = d3.axisLeft(escalaY);
+  const axisX = d3.axisBottom(escalaX)
+    .tickFormat(d3.timeFormat("%b-%y"));
 
   let svg = d3.select("#svg")
     .attr("width", w)
@@ -45,12 +51,12 @@ function draw(datos) {
   svg
     .append('g')
     .attr('transform', 'translate(' + padding + ', 0)')
-    .call(axisX);
+    .call(axisY);
 
   svg
     .append('g')
     .attr('transform', 'translate(' + padding + ', ' + (h-padding) + ')')
-    .call(axisY);
+    .call(axisX);
 }
 
 d3.text("bd_array.txt").then(draw);
