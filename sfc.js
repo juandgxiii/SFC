@@ -7,13 +7,16 @@ const w = Math.max(600, window.innerWidth * 0.8);
 const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
 
 function draw(datos_global, svg_id) {
-  let bd = [];
   let banco = document.getElementById("lista").value;
   datos = datos_global[banco];
+  let bd = [];
+
+  let fecha_min = new Date(2010, 4, 1);
+  let fecha_max = new Date(2020, 4, 1);
 
   for (let i in datos){
-    let fecha = new Date(i.substring(0,4), i.substring(4,6)-1, i.substring(6,8))
-    bd.push([fecha, datos [i]]);
+      let fecha = new Date(i.substring(0,4), i.substring(4,6)-1, 1)
+        if (fecha_min <= fecha && fecha <= fecha_max) {bd.push([fecha, datos [i]]);}
   }
 
   bd.sort((a, b) => a[0] > b[0]);
@@ -27,7 +30,7 @@ function draw(datos_global, svg_id) {
     .domain([d3.min(bd, d => d[1]) * 0.95, d3.max(bd, d => d[1])])
     .range([h - paddingY, 0]);
   const escalaX = d3.scaleTime()
-    .domain([bd[0][0], bd[num-1][0]])
+    .domain([bd[0][0], bd[num-1][0].setMonth(bd[num-1][0].getMonth()+1)])
     .range([paddingX, w]);
 
   const ejeY = d3.axisLeft(escalaY);
