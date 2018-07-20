@@ -1,63 +1,59 @@
-d3.json("es-ES.json").then(function(x){
-  d3.timeFormatDefaultLocale(x);
-});
 let dat;
-const h = Math.max(400, window.innerHeight * 0.8);
+let nombres = [];
+const h = Math.max(400, window.innerHeight * 0.4);
 const w = Math.max(600, window.innerWidth * 0.8);
+// const h = 800;
+// const w = 1400;
+const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
 
-function draw(datos) {
-  datos = JSON.parse(datos);
-  let bd = {};
-  let nombres = [];
+function draw(datos_global, svg_id) {
+  let bd = [];
+  let banco = document.getElementById("lista").value;
+  datos = datos_global[banco];
 
-  for (let i in datos) {
-    bd[i] = []
-    nombres.push(i);
-    for (let j in datos[i]) {
-      let fecha = new Date(j.substring(0,4), j.substring(4,6), j.substring(6,8))
-      bd[i].push([fecha, datos[i][j]]);
-    }
+  for (let i in datos){
+    let fecha = new Date(i.substring(0,4), i.substring(4,6)-1, i.substring(6,8))
+    bd.push([fecha, datos [i]]);
   }
 
-  d3.select("#lista")
-    .selectAll("option")
-    .data(nombres)
-    .enter()
-    .append("option")
-    .attr("value", d => d)
-    .html(d => d.substring(d.indexOf("-")+2, d.length));
+  bd.sort((a, b) => a[0] > b[0]);
 
-  let banco = document.getElementById("lista").value;
-  const num = bd[banco].length;
-  const padding = 100;
+  const num = bd.length;
+
+  const paddingX = 120;
+  const paddingY = 50;
+
   const escalaY = d3.scaleLinear()
-    .domain([d3.min(bd[banco], d => d[1]), d3.max(bd[banco], d => d[1])])
-    .range([h - padding, padding]);
+    .domain([d3.min(bd, d => d[1]) * 0.95, d3.max(bd, d => d[1])])
+    .range([h - paddingY, 0]);
   const escalaX = d3.scaleTime()
-    .domain([bd[banco][0][0], bd[banco][num-1][0]])
-    .range([0, w - padding]);
+    .domain([bd[0][0], bd[num-1][0]])
+    .range([paddingX, w]);
 
-  const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
-  const axisY = d3.axisLeft(escalaY);
-  const axisX = d3.axisBottom(escalaX)
-    .tickFormat(d3.timeFormat("%b-%y"));
+  const ejeY = d3.axisLeft(escalaY);
+  const ejeX = d3.axisBottom(escalaX)
+    .tickFormat(d3.timeFormat("%b-%y"))
+    .ticks(num);
 
-  let svg = d3.select("#svg")
+  let svg = d3.select(svg_id)
     .attr("width", w)
     .attr("height", h);
 
+  let svg_y = document.getElementById(svg_id.substring(1,svg_id.length)).getBoundingClientRect().top;
+
   svg
     .selectAll("rect")
-    .data(bd[banco])
+    .data(bd)
     .enter()
     .append("rect")
-    .attr("x", (d,i) => padding + (i - 1) * ((w - num - padding) / (num - 1)) + i)
+    // .attr("x", (d,i) => escalaX(d[0]))
+    .attr("x", (d,i) => paddingX + (i * ((w - paddingX) / num)))
     .attr("y", d => escalaY(d[1]))
-    .attr("width", (w - num - padding) / num)
-    .attr("height", d => h - escalaY(d[1]) - padding)
+    .attr("width", (w - paddingX - num) / num)
+    .attr("height", d => h - escalaY(d[1]) - paddingY)
     .on("mouseover", function (d) {
       let xpos = parseFloat(d3.select(this).attr('x'));
-      let ypos = parseFloat(d3.select(this).attr('y')) + padding;
+      let ypos = parseFloat(d3.select(this).attr('y')) + parseFloat(d3.select(this).attr('height'))/4 + svg_y;
       d3.select('#tooltip')
         .style('left', xpos + 'px')
         .style('top', ypos + 'px')
@@ -70,22 +66,44 @@ function draw(datos) {
 
   svg
     .append('g')
-    .attr('transform', 'translate(' + padding + ', 0)')
-    .call(axisY);
+    .attr('transform', 'translate(' + paddingX + ', 0)')
+    .call(ejeY);
 
   svg
     .append('g')
-    .attr('transform', 'translate(' + padding + ', ' + (h-padding) + ')')
-    .call(axisX);
+    .attr('transform', 'translate(0, ' + (h - paddingY) + ')')
+    .call(ejeX)
+    .attr("text-anchor", "right")
+    .attr("class", "tickX")
+    .selectAll("text")
+    .attr("transform", 'rotate(-90) translate(-' + paddingY + ', 0)');
 }
 
-d3.text("bd.json").then((x) => {
-  document.getElementById("lista").onchange = reset;
-  dat = x;
-  draw(x)
-});
+window.onload = () => document.getElementById("lista").onchange = reset;
+
+let p1 = d3.json("https://unpkg.com/d3-time-format@2.1.1/locale/es-ES.json");
+let p2 = d3.text("activos.json");
+
+Promise.all([p1, p2]).then((v) => {
+  d3.timeFormatDefaultLocale(v[0]);
+  dat = JSON.parse(v[1]);
+
+  for (let i in dat) {
+    nombres.push(i);
+  }
+
+  d3.select("#lista")
+    .selectAll("option")
+    .data(nombres)
+    .enter()
+    .append("option")
+    .attr("value", d => d)
+    .html(d => d.substring(d.indexOf("-") + 2, d.length));
+
+    draw(dat, "#svg");
+})
 
 function reset() {
   d3.select("#svg").html("");
-  draw(dat);
+  draw(dat, "#svg");
 }

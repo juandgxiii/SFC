@@ -9,7 +9,7 @@ body {
 }
 .titulo {
   font-family: 'Roboto', sans-serif;
-  font-size: 4em;
+  font-size: 3em;
   margin: auto;
 }
 .tick {
@@ -25,7 +25,11 @@ body {
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
   pointer-events: none;
   font-family: 'Roboto', sans-serif;
+  font-size: 0.9em;
 }
 #tooltip.hidden {
   display: none;
+}
+#svg {
+  margin: 1em;
 }
