@@ -1,7 +1,7 @@
 let dat;
 let nombres = [];
 const h = Math.max(400, window.innerHeight * 0.4);
-const w = Math.max(600, window.innerWidth * 0.8);
+const w = Math.max(600, window.innerWidth * 0.92);
 // const h = 800;
 // const w = 1400;
 const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
@@ -42,7 +42,16 @@ function draw(datos_global, svg_id) {
     .attr("width", w)
     .attr("height", h);
 
-  let svg_y = document.getElementById(svg_id.substring(1,svg_id.length)).getBoundingClientRect().top;
+  let gridlines = d3.axisLeft()
+  .tickFormat("")
+  .tickSize(-w + paddingX)
+  .scale(escalaY);
+
+  svg
+  .append("g")
+  .attr('transform', 'translate(' + paddingX + ', 0)')
+  .attr("class", "grid")
+  .call(gridlines);
 
   svg
     .selectAll("rect")
@@ -55,6 +64,7 @@ function draw(datos_global, svg_id) {
     .attr("width", (w - paddingX - num) / num)
     .attr("height", d => h - escalaY(d[1]) - paddingY)
     .on("mouseover", function (d) {
+      let svg_y = document.getElementById(svg_id.substring(1,svg_id.length)).getBoundingClientRect().top;
       let xpos = parseFloat(d3.select(this).attr('x'));
       let ypos = parseFloat(d3.select(this).attr('y')) + parseFloat(d3.select(this).attr('height'))/4 + svg_y;
       d3.select('#tooltip')
