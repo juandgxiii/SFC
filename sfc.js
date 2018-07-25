@@ -1,9 +1,7 @@
 let dat;
 let nombres = [];
-const h = Math.max(400, window.innerHeight * 0.4);
-const w = Math.max(600, window.innerWidth * 0.92);
-// const h = 800;
-// const w = 1400;
+const h = Math.max(400, window.innerHeight * 0.4); //800
+const w = Math.max(600, window.innerWidth * 0.92); //1400
 const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
 
 function draw(datos_global, svg_id) {
@@ -27,7 +25,7 @@ function draw(datos_global, svg_id) {
   const paddingY = 50;
 
   const escalaY = d3.scaleLinear()
-    .domain([d3.min(bd, d => d[1]) * 0.95, d3.max(bd, d => d[1])])
+    .domain([d3.min(bd, d => d[1]) * 0.9, d3.max(bd, d => d[1])])
     .range([h - paddingY, 0]);
   const escalaX = d3.scaleTime()
     .domain([bd[0][0], bd[num-1][0].setMonth(bd[num-1][0].getMonth()+1)])
