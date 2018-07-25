@@ -51,16 +51,17 @@ function draw(datos_global, svg_id) {
   .attr("class", "grid")
   .call(gridlines);
 
-  svg
+  let bars = svg
     .selectAll("rect")
     .data(bd)
     .enter()
     .append("rect")
-    // .attr("x", (d,i) => escalaX(d[0]))
+
+    bars
     .attr("x", (d,i) => paddingX + (i * ((w - paddingX) / num)))
-    .attr("y", d => escalaY(d[1]))
+    .attr("y", h - paddingY)
     .attr("width", (w - paddingX - num) / num)
-    .attr("height", d => h - escalaY(d[1]) - paddingY)
+    .attr("height", 0)
     .on("mouseover", function (d) {
       let svg_y = document.getElementById(svg_id.substring(1,svg_id.length)).getBoundingClientRect().top;
       let xpos = parseFloat(d3.select(this).attr('x'));
@@ -74,6 +75,11 @@ function draw(datos_global, svg_id) {
       })
     .on("mouseout", () => d3.select('#tooltip').classed('hidden', true))
     .attr("class", "bar");
+
+    bars
+    .transition()
+    .attr("y", d => escalaY(d[1]))
+    .attr("height", d => h - escalaY(d[1]) - paddingY);
 
   svg
     .append('g')
