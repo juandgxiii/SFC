@@ -1,15 +1,12 @@
 body {
   background: white;
 }
-.bar {
-  fill: rgb(20, 80, 180);
-}
 .bar:hover {
   fill: #0cc;
 }
 .titulo {
   font-family: 'Roboto', sans-serif;
-  font-size: 3em;
+  font-size: 2em;
   margin: auto;
 }
 .tick {

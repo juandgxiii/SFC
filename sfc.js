@@ -1,7 +1,11 @@
-let dat;
+let dat_act;
+let dat_cart;
 let nombres = [];
 const h = Math.max(400, window.innerHeight * 0.4); //800
-const w = Math.max(600, window.innerWidth * 0.92); //1400
+const w = Math.max(600, window.innerWidth * 0.95); //1400
+const paddingX = 120;
+const paddingY = 50;
+
 const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
 
 function draw(datos_global, svg_id) {
@@ -21,9 +25,6 @@ function draw(datos_global, svg_id) {
 
   const num = bd.length;
 
-  const paddingX = 120;
-  const paddingY = 50;
-
   const escalaY = d3.scaleLinear()
     .domain([d3.min(bd, d => d[1]) * 0.9, d3.max(bd, d => d[1])])
     .range([h - paddingY, 0]);
@@ -31,9 +32,11 @@ function draw(datos_global, svg_id) {
     .domain([bd[0][0], bd[num-1][0].setMonth(bd[num-1][0].getMonth()+1)])
     .range([paddingX, w]);
 
+  const formatoFecha = d3.timeFormat("%b-%y");
+
   const ejeY = d3.axisLeft(escalaY);
   const ejeX = d3.axisBottom(escalaX)
-    .tickFormat(d3.timeFormat("%b-%y"))
+    .tickFormat(formatoFecha)
     .ticks(num);
 
   let svg = d3.select(svg_id)
@@ -70,7 +73,7 @@ function draw(datos_global, svg_id) {
         .style('left', xpos + 'px')
         .style('top', ypos + 'px')
         .select('#tooltip_valor')
-        .html(moneda.format(d[1]));
+        .html('<b>' + formatoFecha(d[0]) + '</b>: ' + moneda.format(d[1]));
       d3.select('#tooltip').classed('hidden', false);
       })
     .on("mouseout", () => d3.select('#tooltip').classed('hidden', true))
@@ -79,7 +82,11 @@ function draw(datos_global, svg_id) {
     bars
     .transition()
     .attr("y", d => escalaY(d[1]))
-    .attr("height", d => h - escalaY(d[1]) - paddingY);
+    .attr("height", d => h - escalaY(d[1]) - paddingY)
+    .style("fill", (d) => {
+      let m = (h - escalaY(d[1]) - paddingY)/(h - paddingY);
+      return 'rgb('+ 20*m + ', ' + 80*m + ', ' + 180*m + ')';
+    });
 
   svg
     .append('g')
@@ -100,12 +107,14 @@ window.onload = () => document.getElementById("lista").onchange = reset;
 
 let p1 = d3.json("https://unpkg.com/d3-time-format@2.1.1/locale/es-ES.json");
 let p2 = d3.text("activos.json");
+let p3 = d3.text("cartera.json");
 
-Promise.all([p1, p2]).then((v) => {
+Promise.all([p1, p2, p3]).then((v) => {
   d3.timeFormatDefaultLocale(v[0]);
-  dat = JSON.parse(v[1]);
+  dat_act = JSON.parse(v[1]);
+  dat_cart = JSON.parse(v[2]);
 
-  for (let i in dat) {
+  for (let i in dat_act) {
     nombres.push(i);
   }
 
@@ -117,10 +126,14 @@ Promise.all([p1, p2]).then((v) => {
     .attr("value", d => d)
     .html(d => d.substring(d.indexOf("-") + 2, d.length));
 
-    draw(dat, "#svg");
+    draw(JSON.parse(v[1]), "#svg-act");
+    draw(JSON.parse(v[2]), "#svg-cart");
 })
 
 function reset() {
-  d3.select("#svg").html("");
-  draw(dat, "#svg");
+  d3.select("#svg-act").html("");
+  draw(dat_act, "#svg-act");
+
+  d3.select("#svg-cart").html("");
+  draw(dat_cart, "#svg-cart");
 }
