@@ -21,7 +21,11 @@ function draw(datos_global, svg_id) {
         if (fecha_min <= fecha && fecha <= fecha_max) {bd.push([fecha, datos [i]]);}
   }
 
-  bd.sort((a, b) => a[0] > b[0]);
+  bd.sort((a, b) => {
+    if (a[0] > b[0]) {return 1}
+    else if (a[0] < b[0]) {return -1}
+    else {return 0}
+  });
 
   const num = bd.length;
 
