@@ -1,5 +1,6 @@
 let dat_act;
 let dat_cart;
+let dat_cart_a;
 let nombres = [];
 const h = Math.max(400, window.innerHeight * 0.4); //800
 const w = Math.max(600, window.innerWidth * 0.95); //1400
@@ -18,7 +19,7 @@ function draw(datos_global, svg_id) {
 
   for (let i in datos){
       let fecha = new Date(i.substring(0,4), i.substring(4,6)-1, 1)
-        if (fecha_min <= fecha && fecha <= fecha_max) {bd.push([fecha, datos [i]]);}
+        if (fecha_min <= fecha && fecha <= fecha_max) {bd.push([fecha, datos [i], dat_cart_a[banco][i]]);}
   }
 
   bd.sort((a, b) => {
@@ -69,7 +70,9 @@ function draw(datos_global, svg_id) {
     .attr("y", h - paddingY)
     .attr("width", (w - paddingX - num) / num)
     .attr("height", 0)
+    .attr("class", "bar")
     .on("mouseover", function (d) {
+      this.setAttribute("style", "fill: #0ce");
       let svg_y = document.getElementById(svg_id.substring(1,svg_id.length)).getBoundingClientRect().top;
       let xpos = parseFloat(d3.select(this).attr('x'));
       let ypos = parseFloat(d3.select(this).attr('y')) + parseFloat(d3.select(this).attr('height'))/4 + svg_y;
@@ -77,14 +80,19 @@ function draw(datos_global, svg_id) {
         .style('left', xpos + 'px')
         .style('top', ypos + 'px')
         .select('#tooltip_valor')
-        .html('<b>' + formatoFecha(d[0]) + '</b>: ' + moneda.format(d[1]));
+        .html('<b>' + formatoFecha(d[0]) + '</b>: ' + moneda.format(d[1]) + '<br>ICC: ' + parseFloat(100 - 100*(d[2]/d[1])).toFixed(2));
       d3.select('#tooltip').classed('hidden', false);
       })
-    .on("mouseout", () => d3.select('#tooltip').classed('hidden', true))
-    .attr("class", "bar");
+    .on("mouseout", function (d) {
+      let m = (h - escalaY(d[1]) - paddingY)/(h - paddingY);
+      let c = 'fill: rgb('+ 20*m + ', ' + 80*m + ', ' + 180*m + ')';
+      this.setAttribute("style", c);
+      d3.select('#tooltip').classed('hidden', true);
+    });
 
     bars
     .transition()
+    .duration(300)
     .attr("y", d => escalaY(d[1]))
     .attr("height", d => h - escalaY(d[1]) - paddingY)
     .style("fill", (d) => {
@@ -112,11 +120,13 @@ window.onload = () => document.getElementById("lista").onchange = reset;
 let p1 = d3.json("https://unpkg.com/d3-time-format@2.1.1/locale/es-ES.json");
 let p2 = d3.text("activos.json");
 let p3 = d3.text("cartera.json");
+let p4 = d3.text("cartera_A.json");
 
-Promise.all([p1, p2, p3]).then((v) => {
+Promise.all([p1, p2, p3, p4]).then((v) => {
   d3.timeFormatDefaultLocale(v[0]);
   dat_act = JSON.parse(v[1]);
   dat_cart = JSON.parse(v[2]);
+  dat_cart_a = JSON.parse(v[3]);
 
   for (let i in dat_act) {
     nombres.push(i);
