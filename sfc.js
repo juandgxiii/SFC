@@ -120,7 +120,7 @@ window.onload = () => document.getElementById("lista").onchange = reset;
 let p1 = d3.json("https://unpkg.com/d3-time-format@2.1.1/locale/es-ES.json");
 let p2 = d3.text("activos.json");
 let p3 = d3.text("cartera.json");
-let p4 = d3.text("cartera_A.json");
+let p4 = d3.text("cartera_a.json");
 
 Promise.all([p1, p2, p3, p4]).then((v) => {
   d3.timeFormatDefaultLocale(v[0]);
