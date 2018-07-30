@@ -7,7 +7,7 @@ const w = Math.max(600, window.innerWidth * 0.95); //1400
 const paddingX = 120;
 const paddingY = 50;
 
-const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', maximumFractionDigits: 2});
+const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0});
 
 function draw(datos_global, svg_id) {
   let banco = document.getElementById("lista").value;
@@ -80,7 +80,7 @@ function draw(datos_global, svg_id) {
         .style('left', xpos + 'px')
         .style('top', ypos + 'px')
         .select('#tooltip_valor')
-        .html('<b>' + formatoFecha(d[0]) + '</b>: ' + moneda.format(d[1]) + '<br>ICC: ' + parseFloat(100 - 100*(d[2]/d[1])).toFixed(2));
+        .html(formatoFecha(d[0]) + '<br><b>' + moneda.format(d[1]) + '</b><br>ICC: ' + parseFloat(100 - 100*(d[2]/d[1])).toFixed(2));
       d3.select('#tooltip').classed('hidden', false);
       })
     .on("mouseout", function (d) {
