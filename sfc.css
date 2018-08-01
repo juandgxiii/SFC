@@ -22,17 +22,25 @@ body {
 #tooltip {
   position: absolute;
   height: auto;
-  padding: 0px 5px 0px 5px;
+  padding: 5px 10px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 5px;
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
   pointer-events: none;
-  font-family: 'Roboto', sans-serif;
   font-size: 0.9em;
+  font-family: sans-serif;
 }
 #tooltip.hidden {
   display: none;
 }
 #svg {
   margin: 1em;
+}
+.fuente {
+  font-family: sans-serif;
+  margin-left: 100px;
+}
+.label {
+  fill: white;
+  font-size: 0.8em;
 }
