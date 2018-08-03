@@ -11,11 +11,10 @@ function draw(datos_global) {
 
   let fechas = [];
   for (let i in datos['fechas']){
-      let fecha = new Date(parseInt(datos['fechas'][i].substring(0,4)), parseInt(datos['fechas'][i].substring(4,6)) - 1, 0);
+      let fecha = new Date(parseInt(datos['fechas'][i].substring(0,4)), parseInt(datos['fechas'][i].substring(4,6)) - 1, 1);
       fechas.push(fecha);
   }
-// console.log(datos['fechas']);
-// console.log(fechas);
+
   datos['fechas_js'] = fechas;
 
   const num = datos['fechas_js'].length;
@@ -28,7 +27,7 @@ function draw(datos_global) {
     .range([paddingX, w]);
 
   const moneda = new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0});
-  const formatoFecha = d3.timeFormat('%b-%y');
+  const formatoFecha = d3.timeFormat('%e %b-%y');
 
   const ejeY = d3.axisLeft(escalaY);
   const ejeX = d3.axisBottom(escalaX)
@@ -101,7 +100,8 @@ function draw(datos_global) {
       .data(datos['ICC'])
       .enter()
       .append('text')
-      .attr('x', (d,i) => paddingX + (i * ((w - paddingX) / num)) + 8)
+      .attr('text-anchor', 'middle')
+      .attr('x', (d,i) => paddingX + (i * ((w - paddingX) / num)) + ((w - paddingX - num) / num)/2)
       .attr('y', (d,i) => escalaY(datos['cartera_total'][i]) + 30)
       .attr('class', 'label')
       .text(d => String((100 * parseFloat(d)).toFixed(1)));
