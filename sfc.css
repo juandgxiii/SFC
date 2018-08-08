@@ -33,9 +33,6 @@ body {
 #tooltip.hidden {
   display: none;
 }
-#svg {
-  margin: 1em;
-}
 .fuente {
   font-family: sans-serif;
   margin-left: 100px;
