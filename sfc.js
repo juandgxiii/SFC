@@ -49,6 +49,14 @@ function draw(datos_global) {
   .attr('class', 'grid')
   .call(gridlines);
 
+  function colorfill (x) {
+    let m = (h - escalaY(x) - paddingY)/(h - paddingY);
+    let h1 = Number((20*m).toFixed(0)).toString(16);
+    let h2 = Number((80*m).toFixed(0)).toString(16);
+    let h3 = Number((180*m).toFixed(0)).toString(16);
+    return '#' + (h1.length<2 ? '0' + h1 : h1) + (h2.length<2 ? '0' + h2 : h2) + (h3.length<2 ? '0' + h3 : h3);
+  }
+
   let bars = svg_cart
     .selectAll('rect')
     .data(datos['cartera_total'])
@@ -61,6 +69,7 @@ function draw(datos_global) {
     .attr('width', (w - paddingX - num) / num)
     .attr('height', 0)
     .attr('class', 'bar')
+    .style('fill', d => colorfill(d))
     .on('mouseover', function (d,i) {
       this.setAttribute('style', 'fill: #0ce');
       let svg_y = document.getElementById('svg-cart').getBoundingClientRect().top;
@@ -78,9 +87,7 @@ function draw(datos_global) {
       d3.select('#tooltip').classed('hidden', false);
       })
     .on('mouseout', function (d) {
-      let m = (h - escalaY(d) - paddingY)/(h - paddingY);
-      let c = 'fill: rgb('+ 20*m + ', ' + 80*m + ', ' + 180*m + ')';
-      this.setAttribute('style', c);
+      this.setAttribute('style', 'fill: ' + colorfill(d));
       d3.select('#tooltip').classed('hidden', true);
      })
     ;
@@ -89,11 +96,7 @@ function draw(datos_global) {
     .transition()
     .duration(300)
     .attr('y', d => escalaY(d))
-    .attr('height', d => h - escalaY(d) - paddingY)
-    .style('fill', d => {
-      let m = (h - escalaY(d) - paddingY)/(h - paddingY);
-      return 'rgb('+ 20*m + ', ' + 80*m + ', ' + 180*m + ')';
-    });
+    .attr('height', d => h - escalaY(d) - paddingY);
 
     svg_cart
       .selectAll('text.labels')
