@@ -153,6 +153,5 @@ Promise.all([p1, p2]).then((v) => {
 
 function reset() {
   d3.select('#svg-cart').html('');
-  // d3.select('#svg-cart').html('');
   draw(dat);
 }
