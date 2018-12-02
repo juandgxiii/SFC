@@ -1,6 +1,6 @@
 let dat;
 let nombres = [];
-const h = Math.max(400, window.innerHeight * 0.4); //800
+const h = Math.max(400, window.innerHeight * 0.8); //800
 const w = Math.max(600, window.innerWidth * 0.95); //1400
 const paddingX = 120;
 const paddingY = 50;
@@ -20,7 +20,7 @@ function draw(datos_global) {
   const num = datos['fechas_js'].length;
 
   const escalaY = d3.scaleLinear()
-    .domain([d3.min(datos['cartera_total']) * 0.9, d3.max(datos['cartera_total'])])
+    .domain([d3.min(datos['cartera_total']) * 0.1, d3.max(datos['cartera_total'])]) //anteriormente min*0.9
     .range([h - paddingY, 0]);
   const escalaX = d3.scaleTime()
     .domain([datos['fechas_js'][0], datos['fechas_js'][num - 1].setMonth(datos['fechas_js'][num - 1].getMonth() + 1)])
