@@ -73,8 +73,10 @@ function draw(datos_global) {
     .on('mouseover', function (d,i) {
       this.setAttribute('style', 'fill: #0ce');
       let svg_y = document.getElementById('svg-cart').getBoundingClientRect().top;
-      let xpos = parseFloat(d3.select(this).attr('x'));
-      let ypos = parseFloat(d3.select(this).attr('y')) + parseFloat(d3.select(this).attr('height'))/4 + svg_y;
+      // let xpos = parseFloat(d3.select(this).attr('x'));
+      let xpos = 200;
+      // let ypos = parseFloat(d3.select(this).attr('y')) + parseFloat(d3.select(this).attr('height'))/4 + svg_y;
+      let ypos = 50
       d3.select('#tooltip')
         .style('left', xpos + 'px')
         .style('top', ypos + 'px')
