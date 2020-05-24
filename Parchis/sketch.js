@@ -34,7 +34,7 @@ function getTilePosition(t) {
 
 
     // outside
-    
+
 
 
     // inside color
@@ -79,7 +79,7 @@ function drawBoard() {
     let tileWidth = width * 0.4 / 3;
     let tileHeight = bigSquareWidth / 8;
     stroke(0);
-    for (let c = 0; c < 1; c++) {
+    for (let c = 0; c < 4; c++) {
         for (let i = 0; i < 3; i++) {
             //big square
             fill(colors[(c+1)%4]);
